@@ -86,7 +86,7 @@ def remove_old_recycle(file):
         lines = inFile.readlines()
         #TODO: LEFT OFF HERE, parse dates and see if longer than certain period
         #TODO: If it was, delete it from the array and rewrite file after
-        
+
 
 if __name__ == "__main__":
     r = login()
