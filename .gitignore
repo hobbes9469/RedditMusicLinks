@@ -2,3 +2,4 @@
 config.py
 saved_links.txt
 recycle.txt
+**/__pycache__
