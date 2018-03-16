@@ -1,3 +1,3 @@
 MUSIC_SUBS = [
-    'chillwave', 'chillmusic'
+    'chillwave', 'chillmusic', 'gamemusic'
 ]

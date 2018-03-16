@@ -3,11 +3,11 @@ import config
 import musicsubs
 from random import shuffle, randint
 import webbrowser
-from datetime import date
+import datetime
 
 # GLOBALS containing parameters for number of submissions
 # and from which time parameter the submissions are from
-NUM_OF_TOP = 5
+NUM_OF_TOP = 10
 TIME_FILTER_PARAM = 'week'
 
 # GLOBAL containing list of sites to accept for saved links
@@ -17,6 +17,8 @@ SITES = [
 
 SAVED_LINKS_FILE = 'saved_links.txt'
 RECYCLE_FILE = 'recycle.txt'
+DEL_TIME_PERIOD = datetime.timedelta
+
 
 
 # Logs in with credentials and returns the reddit instance
@@ -97,17 +99,29 @@ def save_to_recycle(link_pair, file):
         urls = []
         with open(file, 'r+', encoding="utf-8") as recycleFile:
             lines = recycleFile.readlines()
-            recycleFile.write(link_pair[0] + '\t' + link_pair[1] + '\t' + str(date.today()) + '\n')
+            recycleFile.write(link_pair[0] + '\t' + link_pair[1] + '\t' + str(datetime.date.today()) + '\n')
             for line in lines:
                 urls.append(line)
         #print(urls)
 
 
 def remove_old_recycle(file):
+    recycled = []
     with open(file, 'r', encoding="utf-8") as inFile:
         lines = inFile.readlines()
-        #TODO: LEFT OFF HERE, parse dates and see if longer than certain period
-        #TODO: If it was, delete it from the array and rewrite file after
+        for line in lines:
+            line_elem = line.split('\t')
+            link = line_elem[1]
+            date = line_elem[2]
+            year, month, day = date.split('-')
+            recycled_date = datetime.date(int(year), int(month), int(day))
+            two_weeks = datetime.timedelta(weeks=2)
+            if datetime.date.today() - recycled_date < two_weeks:
+                recycled.append(line_elem)
+    with open(file, 'w', encoding="utf-8") as outFile:
+        for r in recycled:
+            outFile.write('\t'.join(r))
+
 
 
 if __name__ == "__main__":
@@ -121,7 +135,7 @@ if __name__ == "__main__":
 
         rand_link_pair, saved_link_pairs = get_random_link(SAVED_LINKS_FILE)
         rand_url = rand_link_pair[1]
-        if (rand_link_pair[1]):
+        if rand_link_pair[1]:
             print(rand_url)
             # webbrowser.open(rand_url)
         else:
